@@ -7,6 +7,9 @@
         label {
             cursor: pointer;
         }
+        #current {
+            font-size: 220px
+        }
     </style>
 </head>
 <body>
@@ -22,7 +25,7 @@
 <button onclick="start()">start</button>
 exercise: 1<span id="exercise"></span>
 
-<div id="current" style="font-size: 220px">60</div>
+<div id="current">60</div>
 
 <label>
     <input type="radio" name="radio" onclick="song=metallica;" checked>metallica
@@ -32,7 +35,6 @@ exercise: 1<span id="exercise"></span>
 </label>
 
 <script>
-
     var song, interval, isNotPausedBefore;
     var exercise = document.getElementById("exercise");
     var exerciseCount = 1;
@@ -50,35 +52,45 @@ exercise: 1<span id="exercise"></span>
 
     song = metallica;
 
-    function stop() {
-        song.onpause = function () {
-            thanks.play();
-        };
-        song.pause();
-        song.currentTime = 0;
-        exerciseCount = 1;
-        clearInterval(interval);
-        isNotPausedBefore = false;
-		exercise.innerHTML = "";
-
-        document.getElementsByTagName("button")[0].disabled=false;
-        document.getElementsByTagName("input")[0].disabled=false;
-        document.getElementsByTagName("input")[1].disabled=false;
-    }
-
     function start() {
         interval = setInterval(render, 1000);
+
+        end.onended = function () {
+            count.play();
+        };
+
         song.onpause = function () {
             end.play();
             exerciseCount++;
             exercise.innerHTML = exercise.innerHTML + ", " + exerciseCount;
             isNotPausedBefore = false;
         };
-        count.play();
 
-        document.getElementsByTagName("button")[0].disabled=true;
-        document.getElementsByTagName("input")[0].disabled=true;
-        document.getElementsByTagName("input")[1].disabled=true;
+        count.play();
+        document.getElementsByTagName("button")[0].disabled = true;
+        document.getElementsByTagName("input")[0].disabled = true;
+        document.getElementsByTagName("input")[1].disabled = true;
+    }
+
+    function stop() {
+        song.onpause = function () {
+            end.play();
+        };
+
+        end.onended = function () {
+            thanks.play();
+        };
+
+        song.pause();
+        song.currentTime = 0;
+        exerciseCount = 1;
+        clearInterval(interval);
+        isNotPausedBefore = false;
+        exercise.innerHTML = "";
+
+        document.getElementsByTagName("button")[0].disabled = false;
+        document.getElementsByTagName("input")[0].disabled = false;
+        document.getElementsByTagName("input")[1].disabled = false;
     }
 
     function render() {
@@ -101,13 +113,9 @@ exercise: 1<span id="exercise"></span>
         }
     }
 
-    end.onended = function () {
-        count.play();
-    };
-
-    count.addEventListener("ended", function () {
+    count.onended = function () {
         go.play();
-    });
+    };
 
     go.onended = function () {
         song.play();
@@ -116,7 +124,6 @@ exercise: 1<span id="exercise"></span>
     thanks.onended = function () {
         applause.play();
     };
-
 
 </script>
 </body>
