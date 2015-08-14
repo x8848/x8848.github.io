@@ -7,52 +7,39 @@
         label {
             cursor: pointer;
         }
+
         #current {
             font-size: 220px
         }
     </style>
 </head>
 <body>
-<audio id="beep" src="audio/beep.wav"></audio>
-<audio id="end" src="audio/end.wav"></audio>
-<audio id="count" src="audio/count.wav"></audio>
-<audio id="go" src="audio/go.wav"></audio>
-<audio id="thanks" src="audio/thanks.wav"></audio>
-<audio id="applause" src="audio/applause.wav"></audio>
-<audio id="song" src="audio/metallica.mp3"></audio>
-<audio id="trauma" src="audio/trauma.mp3"></audio>
-
 <button onclick="start()">start</button>
 exercise: 1<span id="exercise"></span>
 
-<div id="current">60</div>
-
-<label>
-    <input type="radio" name="radio" onclick="song=metallica;" checked>metallica
-</label>
-<label>
-    <input type="radio" name="radio" onclick="song=trauma;">trauma worakls remix
-</label>
+<div id="current"></div>
 
 <script>
-    var song, interval, isNotPausedBefore;
-    var exercise = document.getElementById("exercise");
-    var exerciseCount = 1;
+    var TIMEOUT = 60;
+    var isItBreak, seconds, interval, exercise;
 
-    var beep = document.getElementById("beep");
-    var end = document.getElementById("end");
-    var count = document.getElementById("count");
-    var go = document.getElementById("go");
-    var thanks = document.getElementById("thanks");
-    var applause = document.getElementById("applause");
+    var song = new Audio("audio/song.mp3");
+    var beep = new Audio("audio/beep.wav");
+    var end = new Audio("audio/end.wav");
+    var count = new Audio("audio/count.wav");
+    var go = new Audio("audio/go.wav");
+    var thanks = new Audio("audio/thanks.wav");
+    var applause = new Audio("audio/applause.wav");
+
     var current = document.getElementById("current");
+    var exercise = document.getElementById("exercise");
 
-    var metallica = new Audio("audio/metallica.mp3");
-    var trauma = new Audio("audio/trauma.mp3");
-
-    song = metallica;
+    current.innerHTML = TIMEOUT;
 
     function start() {
+        seconds = 0;
+        exercise = 1;
+        isItBreak = true;
         interval = setInterval(render, 1000);
 
         end.onended = function () {
@@ -60,55 +47,46 @@ exercise: 1<span id="exercise"></span>
         };
 
         song.onpause = function () {
+            seconds = 0;
+            isItBreak = true;
             end.play();
-            exerciseCount++;
-            exercise.innerHTML = exercise.innerHTML + ", " + exerciseCount;
-            isNotPausedBefore = false;
+            exercise++;
+            exercise.innerHTML = exercise.innerHTML + ", " + exercise;
         };
 
         count.play();
         document.getElementsByTagName("button")[0].disabled = true;
-        document.getElementsByTagName("input")[0].disabled = true;
-        document.getElementsByTagName("input")[1].disabled = true;
     }
 
     function stop() {
         song.onpause = function () {
             end.play();
         };
-
         end.onended = function () {
             thanks.play();
         };
 
         song.pause();
         song.currentTime = 0;
-        exerciseCount = 1;
         clearInterval(interval);
-        isNotPausedBefore = false;
         exercise.innerHTML = "";
-
         document.getElementsByTagName("button")[0].disabled = false;
-        document.getElementsByTagName("input")[0].disabled = false;
-        document.getElementsByTagName("input")[1].disabled = false;
     }
 
     function render() {
-        var time = Math.round(song.currentTime);
-        var seconds = time % 60;
+        if (isItBreak) return;
 
-        current.innerHTML = 60 - seconds;
+        seconds = seconds + 1;
+        current.innerHTML = TIMEOUT - seconds;
 
-        if (seconds == 30 || seconds == 55) {
-            beep.play();
-            isNotPausedBefore = true;
-        }
-        if (time == 5 * 60) {
-            stop();
-            return;
-        }
+        if (seconds == (TIMEOUT / 2) || seconds == (TIMEOUT - 5)) beep.play();
 
-        if (isNotPausedBefore && seconds == 0) {
+        if (seconds == TIMEOUT) {
+            current.innerHTML = TIMEOUT;
+            if (exercise == 5) {
+                stop();
+                return;
+            }
             song.pause();
         }
     }
@@ -118,11 +96,16 @@ exercise: 1<span id="exercise"></span>
     };
 
     go.onended = function () {
+        isItBreak = false;
         song.play();
     };
 
     thanks.onended = function () {
         applause.play();
+    };
+
+    song.onended = function () {
+        song.play();
     };
 
 </script>
