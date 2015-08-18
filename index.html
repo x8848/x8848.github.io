@@ -21,7 +21,7 @@ exercise: 1<span id="exercise"></span>
 
 <script>
     var TIMEOUT = 60;
-    var isItBreak, seconds, interval, exercise;
+    var isItBreak, seconds, interval, exerciseCount;
 
     var song = new Audio("audio/song.mp3");
     var beep = new Audio("audio/beep.wav");
@@ -34,11 +34,12 @@ exercise: 1<span id="exercise"></span>
     var current = document.getElementById("current");
     var exercise = document.getElementById("exercise");
 
+    song.loop = true;
     current.innerHTML = TIMEOUT;
 
     function start() {
         seconds = 0;
-        exercise = 1;
+        exerciseCount = 1;
         isItBreak = true;
         interval = setInterval(render, 1000);
 
@@ -50,8 +51,8 @@ exercise: 1<span id="exercise"></span>
             seconds = 0;
             isItBreak = true;
             end.play();
-            exercise++;
-            exercise.innerHTML = exercise.innerHTML + ", " + exercise;
+            exerciseCount++;
+            exercise.innerHTML = exercise.innerHTML + ", " + exerciseCount;
         };
 
         count.play();
@@ -83,7 +84,7 @@ exercise: 1<span id="exercise"></span>
 
         if (seconds == TIMEOUT) {
             current.innerHTML = TIMEOUT;
-            if (exercise == 5) {
+            if (exerciseCount == 5) {
                 stop();
                 return;
             }
