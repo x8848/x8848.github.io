@@ -1,114 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="UTF-8">
     <title>5 min music plank</title>
-    <style>
-        label {
-            cursor: pointer;
-        }
-
-        #current {
-            font-size: 220px
-        }
-    </style>
 </head>
 <body>
 <button onclick="start()">start</button>
-exercise: 1<span id="exercise"></span>
+exercise: 1 <span id="exercise"></span>
 
 <div id="current"></div>
 
-<script>
-    var TIMEOUT = 60;
-    var isItBreak, seconds, interval, exerciseCount;
+<script src="script.js"></script>
 
-    var song = new Audio("audio/song.mp3");
-    var beep = new Audio("audio/beep.wav");
-    var end = new Audio("audio/end.wav");
-    var count = new Audio("audio/count.wav");
-    var go = new Audio("audio/go.wav");
-    var thanks = new Audio("audio/thanks.wav");
-    var applause = new Audio("audio/applause.wav");
-
-    var current = document.getElementById("current");
-    var exercise = document.getElementById("exercise");
-
-    current.innerHTML = TIMEOUT;
-    song.loop = true;
-
-    function start() {
-        seconds = 0;
-        exerciseCount = 1;
-        isItBreak = true;
-        interval = setInterval(render, 1000);
-
-        end.onended = function () {
-            count.play();
-        };
-
-        song.onpause = function () {
-            seconds = 0;
-            isItBreak = true;
-            end.play();
-            exerciseCount++;
-            exercise.innerHTML = exercise.innerHTML + ", " + exerciseCount;
-        };
-
-        count.play();
-        document.getElementsByTagName("button")[0].disabled = true;
-    }
-
-    function stop() {
-        song.onpause = function () {
-            end.play();
-        };
-        end.onended = function () {
-            thanks.play();
-        };
-
-        song.pause();
-        song.currentTime = 0;
-        clearInterval(interval);
-        exercise.innerHTML = "";
-        document.getElementsByTagName("button")[0].disabled = false;
-    }
-
-    function render() {
-        if (isItBreak) return;
-
-        seconds = seconds + 1;
-        current.innerHTML = TIMEOUT - seconds;
-
-        if (seconds == (TIMEOUT / 2) || seconds == (TIMEOUT - 5)) beep.play();
-
-        if (seconds == TIMEOUT) {
-            current.innerHTML = TIMEOUT;
-            if (exerciseCount == 5) {
-                stop();
-                return;
-            }
-            song.pause();
-        }
-    }
-
-    count.onended = function () {
-        go.play();
-    };
-
-    go.onended = function () {
-        isItBreak = false;
-        song.play();
-    };
-
-    thanks.onended = function () {
-        applause.play();
-    };
-
-    song.onended = function () {
-        song.play();
-    };
-
-</script>
 </body>
 </html>
