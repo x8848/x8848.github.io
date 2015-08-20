@@ -1,7 +1,6 @@
 var TIMEOUT = 60;
 var isItBreak, seconds, interval, exerciseCount;
 
-var song = new Audio("audio/song.mp3");
 var beep = new Audio("audio/beep.wav");
 var end = new Audio("audio/end.wav");
 var count = new Audio("audio/count.wav");
@@ -12,7 +11,6 @@ var applause = new Audio("audio/applause.wav");
 var current = document.getElementById("current");
 var exercise = document.getElementById("exercise");
 
-song.loop = true;
 current.innerHTML = TIMEOUT;
 
 function start() {
@@ -24,29 +22,23 @@ function start() {
     end.onended = function () {
         count.play();
     };
-
-    song.onpause = function () {
-        seconds = 0;
-        isItBreak = true;
-        end.play();
-        exerciseCount++;
-        exercise.innerHTML = exercise.innerHTML + ", " + exerciseCount;
-    };
-
     count.play();
     document.getElementsByTagName("button")[0].disabled = true;
 }
 
+function pause() {
+    seconds = 0;
+    isItBreak = true;
+    end.play();
+    exerciseCount++;
+    exercise.innerHTML = exercise.innerHTML + ", " + exerciseCount;
+};
+
 function stop() {
-    song.onpause = function () {
-        end.play();
-    };
     end.onended = function () {
         thanks.play();
     };
-
-    song.pause();
-    song.currentTime = 0;
+    end.play();
     clearInterval(interval);
     exercise.innerHTML = "";
     document.getElementsByTagName("button")[0].disabled = false;
@@ -66,7 +58,7 @@ function render() {
             stop();
             return;
         }
-        song.pause();
+        pause();
     }
 }
 
@@ -81,8 +73,4 @@ go.onended = function () {
 
 thanks.onended = function () {
     applause.play();
-};
-
-song.onended = function () {
-    song.play();
 };
