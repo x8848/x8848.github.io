@@ -13,7 +13,7 @@ function start() {
     count.play();
 }
 
-var activityTime = 20000;
+var activityTime = 60000;
 
 var Timer = {
     current: 0,
