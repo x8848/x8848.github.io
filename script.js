@@ -1,75 +1,79 @@
 var exerciseCount = 1;
-var exercise = document.getElementById( "exercise" );
+var song, interval, isNotPausedBefore;
+var exercise = document.getElementById("exercise");
 
-var beep = document.getElementById( "beep" );
-var end = document.getElementById( "end" );
-var count = document.getElementById( "count" );
-var go = document.getElementById( "go" );
-var thanks = document.getElementById( "thanks" );
-var applause = document.getElementById( "applause" );
-var current = document.getElementById( "current" );
+var beep = document.getElementById("beep");
+var end = document.getElementById("end");
+var count = document.getElementById("count");
+var go = document.getElementById("go");
+var thanks = document.getElementById("thanks");
+var applause = document.getElementById("applause");
+var current = document.getElementById("current");
+
+var metallica = new Audio("audio/metallica.mp3");
+var trauma = new Audio("audio/trauma.mp3");
+
+song = metallica;
 
 function start() {
-    count.play();
-}
+    interval = setInterval(render, 1000);
 
-var activityTime = 60000;
+    end.onended = function () {
+        count.play();
+    };
 
-var Timer = {
-    current: 0,
-    count: function () {
-        if( Timer.active && Timer.current > 0 ) {
-            setTimeout( Timer.count, 1000 );
-            Timer.current--;
-            current.innerHTML = Timer.current;
-        }
-    },
-    reset: function () {
-        Timer.current = Math.round( activityTime / 1000 );
-        current.innerHTML = Timer.current;
-    },
-    stop: function () {
-        Timer.active = false;
-    },
-    start: function () {
-        Timer.reset();
-        Timer.active = true;
-        Timer.count();
-    }
-}
-
-function play() {
-    setTimeout( function () {
-        beep.play();
-    }, activityTime / 2 );
-    setTimeout( function () {
-        beep.play();
-    }, activityTime - 5000 )
-    setTimeout( function () {
-        player.pauseVideo();
-        Timer.stop();
-        if( updateActivityCount() ) {
-            end.onended = function () {
-                count.play();
-            }
-        } else {
-            end.onended = function () {
-                thanks.play();
-            };
-        }
+    song.onpause = function () {
         end.play();
-    }, activityTime );
-    player.playVideo();
-    Timer.start();
+        exerciseCount++;
+        exercise.innerHTML = exercise.innerHTML + ", " + exerciseCount;
+        isNotPausedBefore = false;
+    };
+
+    count.play();
+    document.getElementsByTagName("button")[0].disabled = true;
+    document.getElementsByTagName("input")[0].disabled = true;
+    document.getElementsByTagName("input")[1].disabled = true;
 }
 
-function updateActivityCount() {
-    exerciseCount++;
-    if( exerciseCount < 6 ) {
-        exercise.innerHTML = exercise.innerHTML + ", " + exerciseCount;
-        return true;
+function stop() {
+    song.onpause = function () {
+        end.play();
+    };
+
+    end.onended = function () {
+        thanks.play();
+    };
+
+    song.pause();
+    song.currentTime = 0;
+    exerciseCount = 1;
+    clearInterval(interval);
+    isNotPausedBefore = false;
+    exercise.innerHTML = "";
+
+    document.getElementsByTagName("button")[0].disabled = false;
+    document.getElementsByTagName("input")[0].disabled = false;
+    document.getElementsByTagName("input")[1].disabled = false;
+}
+
+function render() {
+    var time = Math.round(song.currentTime);
+    var seconds = time % 60;
+
+    current.innerHTML = 60 - seconds;
+
+    if (seconds == 30 || seconds == 55) {
+        beep.play();
+        isNotPausedBefore = true;
     }
-    return false;
+    if (time == 5 * 60) {
+        stop();
+        return;
+    }
+
+    if (isNotPausedBefore && seconds == 0) {
+        song.pause();
+    }
 }
 
 count.onended = function () {
@@ -77,57 +81,9 @@ count.onended = function () {
 };
 
 go.onended = function () {
-    play();
+    song.play();
 };
 
 thanks.onended = function () {
     applause.play();
 };
-
-//load yt api
-var tag = document.createElement( 'script' );
-tag.src = "https://www.youtube.com/iframe_api";
-var firstScriptTag = document.getElementsByTagName( 'script' )[0];
-firstScriptTag.parentNode.insertBefore( tag, firstScriptTag );
-
-function onYouTubeIframeAPIReady() {
-    document.getElementById( 'loadbtn' ).removeAttribute( "disabled" );
-}
-
-// 2. This code loads the IFrame Player API code asynchronously.
-
-var player;
-
-function load() {
-    var id = document.getElementById( 'ytcode' ).value;
-    player = new YT.Player( 'player', {
-        height: '390',
-        width: '640',
-        videoId: id,
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-    } );
-
-}
-
-// 4. The API will call this function when the video player is ready.
-function onPlayerReady(event) {
-    document.getElementById( "startbtn" ).removeAttribute( "disabled" );
-    player.playVideo();
-}
-
-// 5. The API calls this function when the player's state changes.
-//    The function indicates that when playing a video (state=1),
-//    the player should play for six seconds and then stop.
-var init = true;
-
-function onPlayerStateChange(event) {
-    if( event.data == YT.PlayerState.PLAYING && init ) {
-        player.pauseVideo();
-        init = false;
-    } else if( event.data == YT.PlayerState.ENDED ) {
-        player.playVideo();
-    }
-}
