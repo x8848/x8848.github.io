@@ -15,19 +15,17 @@
 <audio id="song" src="audio/metallica.mp3"></audio>
 <audio id="trauma" src="audio/trauma.mp3"></audio>
 
-<button onclick="start()">start</button>
+<input id="ytcode" type="text" value="dv13gl0a-FA"></input>
+<button id="loadbtn" onclick="load()">load</button>
+
+<button id="startbtn" onclick="start()" disabled="true">start</button>
 exercise: 1<span id="exercise"></span>
 
 <div id="current">60</div>
 
-<label>
-    <input type="radio" name="radio" onclick="song=metallica;" checked>may be
-</label>
-<label>
-    <input type="radio" name="radio" onclick="song=trauma;">trauma worakls remix
-</label>
-
 <script src="script.js"></script>
+
+<div id="player"></div>
 
 </body>
 </html>
