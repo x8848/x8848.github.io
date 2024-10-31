@@ -1,6 +1,7 @@
 label {
-    cursor: pointer;
+  cursor: pointer;
 }
+
 #current {
-    font-size: 220px
+  font-size: 220px;
 }

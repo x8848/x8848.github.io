@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="UTF-8">
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <meta charset="UTF-8" />
     <title>5 min music plank</title>
-</head>
-<body>
-<audio id="beep" src="audio/beep.wav"></audio>
-<audio id="end" src="audio/end.wav"></audio>
-<audio id="count" src="audio/count.wav"></audio>
-<audio id="go" src="audio/go.wav"></audio>
-<audio id="thanks" src="audio/thanks.wav"></audio>
-<audio id="applause" src="audio/applause.wav"></audio>
-<audio id="song" src="audio/metallica.mp3"></audio>
-<audio id="trauma" src="audio/trauma.mp3"></audio>
+  </head>
+  <body>
+    <audio id="beep" src="audio/beep.wav"></audio>
+    <audio id="end" src="audio/end.wav"></audio>
+    <audio id="count" src="audio/count.wav"></audio>
+    <audio id="go" src="audio/go.wav"></audio>
+    <audio id="thanks" src="audio/thanks.wav"></audio>
+    <audio id="applause" src="audio/applause.wav"></audio>
+    <audio id="song" src="audio/metallica.mp3"></audio>
+    <audio id="trauma" src="audio/trauma.mp3"></audio>
 
-<button onclick="start()">start</button>
-exercise: 1<span id="exercise"></span>
+    <button onclick="start()">start</button>
+    exercise: 1<span id="exercise"></span>
 
-<div id="current">60</div>
+    <div id="current">60</div>
 
-<label>
-    <input type="radio" name="radio" onclick="song=metallica;" checked>may be
-</label>
-<label>
-    <input type="radio" name="radio" onclick="song=trauma;">trauma worakls remix
-</label>
+    <label>
+      <input type="radio" name="radio" onclick="song=metallica;" checked />may
+      be
+    </label>
+    <label>
+      <input type="radio" name="radio" onclick="song=trauma;" />trauma worakls
+      remix
+    </label>
 
-<script src="script.js"></script>
-
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
